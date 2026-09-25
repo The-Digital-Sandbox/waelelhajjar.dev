@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wael El Hajjar</title>
+<meta name="description" content="Software engineer in Manchester. Founded and shipped a payments network to both app stores. Rust, Kotlin, Swift, TypeScript. Looking for the next role.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Archivo,Helvetica,Arial,sans-serif' font-weight='800' font-size='20' fill='white'%3EW%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+<div class="page">
+
+<header class="masthead">
+  <a class="masthead-name" href="/">Wael El Hajjar</a>
+  <p class="masthead-line">Software engineer, Manchester</p>
+  <nav class="masthead-nav" aria-label="Sections">
+    <a href="#s01">Work</a>
+    <a href="#how">How I work</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<section class="cover" aria-label="Introduction">
+  <h1 class="cover-head">Goes as deep as the problem needs.</h1>
+  <figure class="cover-figure">
+    <img src="img/portrait.jpg" alt="Wael El Hajjar" width="1200" height="1500">
+  </figure>
+  <p class="standfirst">I build production web and mobile systems. For the last year that has meant founding a payments network and shipping it to both app stores, most of it alone: a Rust ledger, a Kotlin app, a Swift app, a TypeScript wallet and gateway, and the operations behind them.</p>
+  <aside class="cover-note">
+    <p><strong>Looking for the next role.</strong> Full-stack, mobile or product engineering, on a team that ships. Available now. Remote UK, or hybrid from Manchester.</p>
+    <p><a href="mailto:wael@thedigitalsandbox.co.uk">wael@thedigitalsandbox.co.uk</a><br><a href="https://github.com/The-Digital-Sandbox">github.com/The-Digital-Sandbox</a></p>
+  </aside>
+</section>
+
+<nav class="contents" aria-label="Contents">
+  <a href="#s01"><span class="folio">01</span>Spondula</a>
+  <a href="#s02"><span class="folio">02</span>Crimson Desert</a>
+  <a href="#s03"><span class="folio">03</span>Thursday</a>
+  <a href="#s04"><span class="folio">04</span>Earlier work</a>
+  <a href="#s05"><span class="folio">05</span>Smaller things</a>
+  <a href="#how"><span class="folio">06</span>How I work</a>
+</nav>
+
+<article id="s01" class="feature image-right">
+  <header class="feature-head">
+    <span class="folio">01</span>
+    <p class="kicker">Spondula, a global payments network. Founder and engineer, 2025 to now.</p>
+    <h2>One implementation of the maths, not two.</h2>
+  </header>
+  <div class="feature-body">
+    <p>Spondula is a global payments network where your S-Handle is your payment identity, the payment equivalent of a username. You share it instead of account numbers, sort codes, IBANs or wallet addresses. Transfers between S-Handles on the network are free. It has been live in beta since June 2026 and is on the <a href="https://apps.apple.com/gb/app/spondula/id6798353183">App Store</a> and <a href="https://play.google.com/store/apps/details?id=com.spondula.wallet">Google Play</a>.</p>
+    <p>Nine repos, most of them mine end to end: a TypeScript web wallet and gateway, an admin console, a merchant gateway, a status page, an article studio, a Kotlin and Compose Android app, a SwiftUI iOS app, and a Rust ledger underneath. Alongside them a motion kit in Remotion whose compositions are prop-driven templates, so a corridor teaser is rendered from data rather than re-edited.</p>
+    <p>The decision I would defend hardest is the signing core. A wallet that signs payments on two platforms should have one implementation of the maths. So the key derivation, signing and address code is one Rust crate exposed to Swift and Kotlin through UniFFI, with the golden vector pinned at three layers and the signature path cross-checked against the reference JavaScript implementation. That crate is public as <a href="https://github.com/The-Digital-Sandbox/sr25519-uniffi">sr25519-uniffi</a>.</p>
+  </div>
+  <blockquote class="pull">A wallet that signs payments on two platforms should have one implementation of the maths.</blockquote>
+  <figure class="feature-figure phone">
+    <img src="img/spondula-send.png" alt="Spondula iOS send screen confirming a payment to a handle, network fee free, arrives instantly" width="330" height="720" loading="lazy">
+    <figcaption>The send confirmation on iOS. Recipient by handle, fee free, arrives instantly.</figcaption>
+  </figure>
+</article>
+
+<article id="s02" class="feature image-left">
+  <header class="feature-head">
+    <span class="folio">02</span>
+    <p class="kicker">Reverse engineering Crimson Desert's mesh format, 2026. <a href="https://github.com/The-Digital-Sandbox/crimson-desert-got-dragon-mod">Public repo</a>, MIT.</p>
+    <h2>The engine does not store 3D positions at all.</h2>
+  </header>
+  <figure class="feature-figure formula">
+    <pre><code>pos = bbox_min
+    + (uint16 / 32767)
+    * bbox_dim</code></pre>
+    <figcaption>How the vertex shader rebuilds each position, read out of the DXIL. Six quantised bytes per vertex, one bounding box per submesh.</figcaption>
+  </figure>
+  <div class="feature-body">
+    <p>The game's skinned-mesh format is undocumented, and every existing extractor gave up on it. The reason turned out to be that the file holds no positions. The vertex shader reconstructs them at runtime from quantised bytes and a per-submesh bounding box stored in the descriptor. I found that by tracing a single draw in PIX and reading the compiled shader.</p>
+    <p>From there: a codec that decodes and re-encodes the format, patchers that redirect assets to a staging directory so the game's own files are never touched, and CPU replays of the shader stages that are checked against the capture stage by stage until the residual is explained. The C++ loader DLL that hooks the game's file API is a separate project.</p>
+    <p>The repo also keeps the approaches that looked right and were wrong, so nobody repeats them.</p>
+  </div>
+  <blockquote class="pull">Found by tracing one draw in PIX and reading the compiled shader.</blockquote>
+</article>
+
+<article id="s03" class="feature image-right">
+  <header class="feature-head">
+    <span class="folio">03</span>
+    <p class="kicker">Thursday, a personal chief of staff, and <a href="https://github.com/The-Digital-Sandbox/vault-brain">vault-brain</a>, its memory pipeline, released on its own.</p>
+    <h2>A memory it maintains itself.</h2>
+  </header>
+  <div class="feature-body">
+    <p>Thursday answers on WhatsApp and email. Behind it is a Node server with a React ops deck, a headless CLI runner for the model with per-thread session continuity, and a morning brief, an end-of-day review and an obligation ledger that run without being asked.</p>
+    <p>The part worth publishing is how it remembers. An agent that remembers across sessions needs its memory maintained, not just appended. Three nightly stages run over a markdown vault: walk the day's session captures into typed atoms on entity notes, reconcile duplicate entities and repoint every wikilink, then type the relationships between notes and promote well-connected ones into insight hubs. Ledgers make every stage idempotent, a budget governor can skip a night, and the model is any command that reads a prompt on stdin. No dependencies, 51 tests.</p>
+  </div>
+  <figure class="feature-figure diagram">
+    <svg viewBox="0 0 320 300" role="img" aria-label="Three nightly stages: walk, reconcile, link">
+      <g font-family="Archivo, Helvetica, Arial, sans-serif" font-weight="800" fill="#000">
+        <text x="0" y="60" font-size="56" style="font-variation-settings:'wdth' 62">Walk</text>
+        <text x="0" y="160" font-size="56" style="font-variation-settings:'wdth' 62">Reconcile</text>
+        <text x="0" y="260" font-size="56" style="font-variation-settings:'wdth' 62">Link</text>
+      </g>
+      <g font-family="Source Serif 4, Georgia, serif" font-size="14" fill="#000">
+        <text x="0" y="86">captures become atoms on entity notes</text>
+        <text x="0" y="186">duplicates merge, links repoint, nothing deleted</text>
+        <text x="0" y="286">typed edges, then insight hubs</text>
+      </g>
+      <line x1="0" y1="104" x2="320" y2="104" stroke="#000" stroke-width="1"/>
+      <line x1="0" y1="204" x2="320" y2="204" stroke="#000" stroke-width="1"/>
+    </svg>
+    <figcaption>The three stages, in the order they run at night.</figcaption>
+  </figure>
+</article>
+
+<article id="s04" class="feature image-left wide">
+  <header class="feature-head">
+    <span class="folio">04</span>
+    <p class="kicker">Before and alongside Spondula: The Digital Sandbox, Autotube, Fincore.</p>
+    <h2>Products, not prototypes. One prototype.</h2>
+  </header>
+  <figure class="feature-figure browser">
+    <img src="img/tds-home.jpg" alt="The Digital Sandbox homepage" width="1400" height="984" loading="lazy">
+    <figcaption><a href="https://thedigitalsandbox.co.uk">thedigitalsandbox.co.uk</a>, live.</figcaption>
+  </figure>
+  <div class="feature-body">
+    <p><strong>The Digital Sandbox</strong> is a customer-messaging platform for small businesses: an embeddable chat widget, campaigns and flows, Meta integrations for Facebook, Instagram and WhatsApp, and a React Native companion app. Next.js, deployed on Google Cloud.</p>
+    <p><strong>Autotube</strong> is a multi-tenant short-video generator. Brand configuration drives the Remotion compositions, so one video engine serves every tenant with their own fonts, colours and presenter overlays, on top of tenant-scoped data rules and a render job queue.</p>
+    <p><strong><a href="https://github.com/The-Digital-Sandbox/Fincore.AI">Fincore</a></strong> is the prototype: a fintech app that reads your Big Five personality profile and reframes spending decisions through it. 38 screens in Next.js and an Expo twin. The splash is rendered to video by Remotion from the same component that draws it in the app, so the two can never disagree.</p>
+  </div>
+  <figure class="feature-figure phone second">
+    <img src="img/fincore-result.png" alt="Fincore prototype: the Feels Like screen showing a purchase and personality trait reasoning" width="430" height="900" loading="lazy">
+    <figcaption>Fincore, the scan result screen.</figcaption>
+  </figure>
+</article>
+
+<article id="s05" class="feature list">
+  <header class="feature-head">
+    <span class="folio">05</span>
+    <p class="kicker">Smaller things.</p>
+    <h2>Side projects, forks and a droid.</h2>
+  </header>
+  <dl class="small-list">
+    <div><dt><a href="https://github.com/The-Digital-Sandbox/token-gating-admin">token-gating-admin</a></dt><dd>Per-product token gating for a storefront, with a shopper preview of what a holder and a non-holder each see. Vite, React, TypeScript, Tailwind v4.</dd></div>
+    <div><dt>Hermes Mobile</dt><dd>A platform adapter and Android app that make a phone a first-class channel for an open-source agent framework. Python plugin, push notifications, speech synthesised on send. Kotlin and Compose console. 43 plugin tests, 20 app tests.</dd></div>
+    <div><dt>Pixel Agents fork</dt><dd>A fork of a VS Code extension that draws running coding agents as pixel characters in an office. Added a tower view that stacks workspaces as floors, tool-name pills above subagents, and a sticky fade on stop so short-lived agents are visible at all.</dd></div>
+    <div><dt>DigiSkale</dt><dd>A Flutter social app built with a small team: posts, stories, follows, notifications on Firebase. My part is posting and profiles, and the data rules behind them.</dd></div>
+    <div><dt>BD-1</dt><dd>A desk-scale walking companion droid, in progress. Twelve bus servos, one IMU, printed spars on metal brackets. Walking chosen over wheels because the character is the point.</dd></div>
+  </dl>
+</article>
+
+<section id="how" class="feature how">
+  <header class="feature-head">
+    <span class="folio">06</span>
+    <p class="kicker">How I work.</p>
+    <h2>When a fix fails twice, stop guessing and get evidence.</h2>
+  </header>
+  <div class="feature-body">
+    <p>An animation that would not settle was recorded frame by frame from the simulator until the broken transition was visible. The key derivation under two apps has a golden vector pinned at three layers, Rust, the FFI boundary and the iOS test, so a platform port cannot drift. Every large change gets an adversarial review from a second, independent reviewer before it merges.</p>
+    <p class="stack">TypeScript, Next.js, React, Kotlin, Jetpack Compose, Swift, SwiftUI, Rust, UniFFI, Firebase, Google Cloud, Playwright, GitHub Actions, Remotion, After Effects.</p>
+  </div>
+</section>
+
+<footer id="contact" class="colophon">
+  <div>
+    <p class="colophon-name">Wael El Hajjar</p>
+    <p><a href="mailto:wael@thedigitalsandbox.co.uk">wael@thedigitalsandbox.co.uk</a><br><a href="https://github.com/The-Digital-Sandbox">github.com/The-Digital-Sandbox</a><br>Manchester, United Kingdom</p>
+  </div>
+  <p class="colophon-note">Set in Archivo and Source Serif. Built by hand, no framework. Source on <a href="https://github.com/The-Digital-Sandbox/waelelhajjar.dev">GitHub</a>. 2026.</p>
+</footer>
+
+</div>
+</body>
+</html>
