@@ -34,39 +34,10 @@
     </aside>
   </div>
 
-  <div class="stack" id="stack" aria-label="Four layers of the work, from the app people hold to the maths underneath">
-    <a class="layer layer-app" href="#s01" data-depth="0">
-      <span class="layer-tag">The app people hold</span>
-      <div class="phone phone-sm">
-        <video muted autoplay loop playsinline preload="metadata" poster="img/spondula-send.png">
-          <source src="media/send.mp4" type="video/mp4">
-        </video>
-      </div>
-    </a>
-    <a class="layer layer-code" href="#s01" data-depth="1">
-      <span class="layer-tag">The crate that signs for it, Rust, shared by iOS and Android</span>
-<pre><code>pub fn sign(secret_key: &amp;[u8], message: &amp;[u8])
-    -&gt; Result&lt;Vec&lt;u8&gt;, CryptoError&gt; {
-    let secret = SecretKey::from_bytes(secret_key)
-        .map_err(|_| CryptoError::InvalidKeyLength)?;
-    let public = secret.to_public();
-    let ctx = signing_context(SIGNING_CONTEXT);
-    let sig = secret.sign(ctx.bytes(message), &amp;public);
-    Ok(sig.to_bytes().to_vec())
-}</code></pre>
-    </a>
-    <a class="layer layer-formula" href="#s02" data-depth="2">
-      <span class="layer-tag">A game engine's mesh format, read out of the shader</span>
-<pre><code>pos = bbox_min
-    + (uint16 / 32767)
-    * bbox_dim</code></pre>
-    </a>
-    <a class="layer layer-memory" href="#s03" data-depth="3">
-      <span class="layer-tag">An assistant's memory, maintained nightly</span>
-      <ol class="mini-stages"><li>Walk</li><li>Reconcile</li><li>Link</li></ol>
-    </a>
-    <p class="stack-hint">Move the pointer over the stack, or scroll.</p>
-  </div>
+  <figure class="hero-figure" id="hero-figure">
+    <canvas id="depth" width="760" height="600" aria-label="A mesh shown at three depths: the surface people see, the grid the shader rebuilds, and the bytes the file holds"></canvas>
+    <figcaption id="cap-depth">Drag to turn it. Scroll to take it apart: the surface, the grid the shader rebuilds, and the bytes the file actually holds.</figcaption>
+  </figure>
 </section>
 
 <nav class="contents" aria-label="Contents">
@@ -85,23 +56,22 @@
     <h2>Send to a handle. One implementation of the maths underneath.</h2>
   </header>
   <div class="spread-text">
-    <p>Your S-Handle is your payment identity, the payment equivalent of a username. You share it instead of account numbers, sort codes, IBANs or wallet addresses, and transfers between handles on the network are free. The recordings on the right are the real iOS app: a send, and a payment inside a chat.</p>
-    <p>Nine repos, most of them mine end to end: a TypeScript web wallet and gateway, an admin console, a merchant gateway, a status page, an article studio, a Kotlin and Compose Android app, a SwiftUI iOS app, and a Rust ledger underneath. Alongside them a motion kit in Remotion whose compositions are prop-driven templates, so the teaser in the third tab is rendered from data, not edited by hand.</p>
+    <p>Your S-Handle is your payment identity, the payment equivalent of a username. You share it instead of account numbers, sort codes, IBANs or wallet addresses, and transfers between handles on the network are free. The figure on the right is the idea in motion; the recordings beneath it are the real iOS app.</p>
+    <p>Nine repos, most of them mine end to end: a TypeScript web wallet and gateway, an admin console, a merchant gateway, a status page, an article studio, a Kotlin and Compose Android app, a SwiftUI iOS app, and a Rust ledger underneath. Alongside them a motion kit in Remotion whose compositions are prop-driven templates, so the teaser in the recordings is rendered from data, not edited by hand.</p>
     <p>The decision I would defend hardest is the signing core. A wallet that signs payments on two platforms should have one implementation of the maths, so key derivation, signing and addresses are one Rust crate exposed to Swift and Kotlin through UniFFI, with the golden vector pinned at three layers and the signature path cross-checked against the reference JavaScript implementation. Public as <a href="https://github.com/The-Digital-Sandbox/sr25519-uniffi">sr25519-uniffi</a>.</p>
   </div>
-  <figure class="spread-figure figure-phone" id="fig-spondula">
-    <div class="tabs" role="tablist" aria-label="Recordings">
-      <button role="tab" aria-selected="true" data-video="send">Send</button>
-      <button role="tab" aria-selected="false" data-video="chat">Pay in chat</button>
-      <button role="tab" aria-selected="false" data-video="teaser">Teaser</button>
+  <figure class="spread-figure figure-canvas" id="fig-handles">
+    <canvas id="handles" width="720" height="560" aria-label="Handles on a network; click two to send a payment between them"></canvas>
+    <div class="controls">
+      <span class="hint" id="cap-handles-hint">Click a handle, then another, to send between them.</span>
     </div>
-    <div class="phone">
-      <video id="v-send" class="is-on" muted autoplay loop playsinline preload="metadata" poster="img/spondula-send.png"><source src="media/send.mp4" type="video/mp4"></video>
-      <video id="v-chat" muted loop playsinline preload="metadata"><source src="media/chat.mp4" type="video/mp4"></video>
-      <video id="v-teaser" muted loop playsinline preload="metadata"><source src="media/teaser.mp4" type="video/mp4"></video>
-    </div>
-    <figcaption id="cap-spondula">Sending 10 USD-S to a handle on iOS. Fee free, arrives instantly.</figcaption>
+    <figcaption id="cap-handles">Sending between S-Handles: no account numbers on either side, free, and both sides see it land at once. Amounts and names here are illustrative.</figcaption>
   </figure>
+  <div class="recordings" aria-label="Recordings of the real app">
+    <figure><video muted loop playsinline preload="metadata" poster="img/spondula-send.png"><source src="media/send.mp4" type="video/mp4"></video><figcaption>Send, iOS</figcaption></figure>
+    <figure><video muted loop playsinline preload="metadata"><source src="media/chat.mp4" type="video/mp4"></video><figcaption>Pay in chat, iOS</figcaption></figure>
+    <figure><video muted loop playsinline preload="metadata"><source src="media/teaser.mp4" type="video/mp4"></video><figcaption>Teaser, Remotion</figcaption></figure>
+  </div>
 </article>
 
 <article id="s02" class="spread">
@@ -154,29 +124,33 @@
     <h2>Products, and one prototype.</h2>
   </header>
   <div class="spread-text">
-    <p><strong>The Digital Sandbox</strong> is a customer-messaging platform for small businesses: an embeddable chat widget, campaigns and flows, Meta integrations for Facebook, Instagram and WhatsApp, and a React Native companion app. Next.js, deployed on Google Cloud. The browser on the right is the live site, not a screenshot.</p>
+    <p><strong>The Digital Sandbox</strong> is a customer-messaging platform for small businesses: an embeddable chat widget, campaigns and flows, Meta integrations for Facebook, Instagram and WhatsApp, and a React Native companion app. Next.js, deployed on Google Cloud. The figure on the right runs the core flow; the live site can be opened inside it.</p>
     <p><strong>Autotube</strong> is a multi-tenant short-video generator. Brand configuration drives the Remotion compositions, so one video engine serves every tenant with their own fonts, colours and presenter overlays, on top of tenant-scoped data rules and a render job queue.</p>
-    <p><strong><a href="https://github.com/The-Digital-Sandbox/Fincore.AI">Fincore</a></strong> is the prototype: a fintech app that reads your Big Five personality profile and reframes spending decisions through it. 38 screens in Next.js and an Expo twin. Swipe through five of them below the browser.</p>
+    <p><strong><a href="https://github.com/The-Digital-Sandbox/Fincore.AI">Fincore</a></strong> is the prototype: a fintech app that reads your Big Five personality profile and reframes spending decisions through it. 38 screens in Next.js and an Expo twin. The second figure is the profile the whole app is built on.</p>
   </div>
-  <figure class="spread-figure figure-browser" id="fig-tds">
-    <div class="browser">
+  <figure class="spread-figure figure-canvas" id="fig-flow">
+    <canvas id="flow" width="720" height="360" aria-label="A comment on a social post triggers a keyword rule, an automatic reply, and a conversation"></canvas>
+    <div class="controls">
+      <label for="keyword">Trigger word <input id="keyword" type="text" value="INFO" maxlength="12" spellcheck="false"></label>
+      <button id="run-flow" class="pill">Run again</button>
+      <button id="load-tds" class="pill pill-quiet">Open the live site here</button>
+    </div>
+    <figcaption id="cap-flow">The Digital Sandbox: a comment containing the trigger word becomes a direct message and a conversation, without anyone at the business touching it.</figcaption>
+    <div class="browser is-hidden" id="tds-browser">
       <div class="browser-bar"><span></span><span></span><span></span><em>thedigitalsandbox.co.uk</em></div>
-      <div class="browser-body">
-        <button class="load-site" id="load-tds">Load the live site</button>
-        <iframe id="tds-frame" title="The Digital Sandbox, live" loading="lazy" referrerpolicy="no-referrer"></iframe>
-      </div>
+      <div class="browser-body"><iframe id="tds-frame" title="The Digital Sandbox, live" loading="lazy" referrerpolicy="no-referrer"></iframe></div>
     </div>
-    <figcaption><a href="https://thedigitalsandbox.co.uk">thedigitalsandbox.co.uk</a>, embedded live. It loads on request to keep this page light.</figcaption>
   </figure>
-  <figure class="spread-figure figure-strip" id="fig-fincore">
-    <div class="strip" tabindex="0" aria-label="Fincore prototype screens, scroll sideways">
-      <img src="img/fincore-profile.jpg" alt="Fincore profile screen" width="430" height="900" loading="lazy">
-      <img src="img/fincore-faith.jpg" alt="Fincore Faith chat screen" width="430" height="900" loading="lazy">
-      <img src="img/fincore-scan.jpg" alt="Fincore Feels Like scanner" width="430" height="900" loading="lazy">
-      <img src="img/fincore-result.jpg" alt="Fincore scan result with personality trait reasoning" width="430" height="900" loading="lazy">
-      <img src="img/fincore-banking.jpg" alt="Fincore banking screen" width="430" height="900" loading="lazy">
+  <figure class="spread-figure figure-canvas" id="fig-ocean">
+    <canvas id="ocean" width="720" height="420" aria-label="Five personality traits as a radar chart, driven by the sliders"></canvas>
+    <div class="controls ocean-controls">
+      <label>Openness <input type="range" min="0" max="100" value="72" data-trait="0"></label>
+      <label>Conscientiousness <input type="range" min="0" max="100" value="45" data-trait="1"></label>
+      <label>Extraversion <input type="range" min="0" max="100" value="81" data-trait="2"></label>
+      <label>Agreeableness <input type="range" min="0" max="100" value="63" data-trait="3"></label>
+      <label>Neuroticism <input type="range" min="0" max="100" value="38" data-trait="4"></label>
     </div>
-    <figcaption>Fincore: profile, Faith, the scanner, a result, banking.</figcaption>
+    <figcaption>Fincore: the profile that every later screen speaks to. Move the sliders and the reading changes. Illustrative numbers.</figcaption>
   </figure>
 </article>
 
@@ -215,7 +189,7 @@
     <p class="colophon-name">Wael El Hajjar</p>
     <p><a href="mailto:wael@thedigitalsandbox.co.uk">wael@thedigitalsandbox.co.uk</a><br><a href="https://github.com/The-Digital-Sandbox">github.com/The-Digital-Sandbox</a><br>Manchester, United Kingdom</p>
   </div>
-  <p class="colophon-note">Set in Archivo and Source Serif. Hand-written, no framework. The figures are real recordings, a live site, and two small canvases. Source on <a href="https://github.com/The-Digital-Sandbox/waelelhajjar.dev">GitHub</a>. 2026.</p>
+  <p class="colophon-note">Set in Archivo and Source Serif. Hand-written, no framework. The figures are small canvases that show each mechanism, plus real recordings and a live site. Source on <a href="https://github.com/The-Digital-Sandbox/waelelhajjar.dev">GitHub</a>. 2026.</p>
 </footer>
 
 </div>

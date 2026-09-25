@@ -74,60 +74,10 @@ button { font: inherit; }
 .cover-note p { margin: 0 0 8px; }
 .cover-note .sep { color: var(--muted); padding: 0 6px; }
 
-.stack {
-  grid-column: 7 / 13;
-  position: relative;
-  height: 560px;
-  perspective: 1400px;
-  perspective-origin: 50% 40%;
-}
-.layer {
-  position: absolute;
-  left: 8%;
-  top: 6%;
-  width: 84%;
-  display: block;
-  color: var(--ink);
-  background: var(--paper);
-  border: 1px solid var(--ink);
-  box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.35);
-  transform-style: preserve-3d;
-  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
-  padding: 14px 16px 16px;
-  will-change: transform;
-}
-.layer:hover { text-decoration: none; border-color: var(--accent); }
-.layer-tag {
-  display: block;
-  font-family: var(--display);
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--muted);
-  margin-bottom: 10px;
-}
-.layer pre {
-  margin: 0;
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  font-size: 0.78rem;
-  line-height: 1.45;
-  white-space: pre;
-  overflow: hidden;
-}
-.layer-app { z-index: 4; left: 0; top: 4%; width: 36%; padding: 10px 10px 12px; }
-.layer-code { z-index: 3; left: 40%; top: 0; width: 60%; }
-.layer-code pre { font-size: 0.66rem; }
-.layer-formula { z-index: 2; left: 40%; top: 46%; width: 36%; }
-.layer-formula pre { font-size: 1rem; }
-.layer-memory { z-index: 1; left: 64%; top: 64%; width: 36%; }
-.mini-stages {
-  margin: 0; padding: 0; list-style: none;
-  font-family: var(--display); font-weight: 800; font-variation-settings: "wdth" 66;
-  font-size: 1.6rem; line-height: 1.05;
-}
-.stack-hint {
-  position: absolute; left: 8%; bottom: -34px; margin: 0;
-  font-family: var(--display); font-size: 0.8rem; color: var(--muted);
-}
+.hero-figure { grid-column: 7 / 13; margin: 0; }
+.hero-figure canvas { width: 100%; height: auto; cursor: grab; touch-action: pan-y; }
+.hero-figure canvas:active { cursor: grabbing; }
+.hero-figure figcaption { font-family: var(--display); font-size: 0.85rem; color: var(--muted); margin-top: 10px; max-width: 52ch; }
 
 /* Phone frame used in the stack and in spread 01 */
 .phone {
@@ -185,7 +135,13 @@ button { font: inherit; }
 .spread-figure { grid-column: 6 / 13; margin: 0; align-self: start; position: sticky; top: 24px; }
 .spread-figure figcaption { font-family: var(--display); font-size: 0.85rem; color: var(--muted); margin-top: 12px; line-height: 1.4; max-width: 60ch; }
 
-/* Spread 01: phone with tabs */
+/* Spread 01: recordings row beneath the figure */
+.recordings { grid-column: 6 / 13; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gutter); margin: 0; }
+.recordings figure { margin: 0; }
+.recordings video { width: 100%; aspect-ratio: 1206 / 2622; object-fit: cover; border-radius: 18px; background: #000; }
+.recordings figcaption { font-family: var(--display); font-size: 0.85rem; color: var(--muted); margin-top: 8px; }
+
+/* Spread 01 (old phone tabs, kept for reference) */
 .figure-phone { display: grid; grid-template-columns: 300px minmax(0, 1fr); column-gap: 28px; row-gap: 12px; align-items: start; }
 .figure-phone .phone { grid-column: 1; grid-row: 1 / 3; }
 .figure-phone .tabs { grid-column: 2; grid-row: 1; }
@@ -206,6 +162,16 @@ button { font: inherit; }
 .controls output { color: var(--accent); font-weight: 800; min-width: 5ch; }
 .controls input[type="range"] { width: 220px; accent-color: var(--accent); }
 .controls .check { font-weight: 500; }
+.controls .hint { color: var(--ink); font-weight: 600; }
+.controls input[type="text"] { font: inherit; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; width: 9ch; padding: 6px 8px; border: 1px solid var(--ink); border-radius: 6px; text-transform: uppercase; }
+.pill { background: none; border: 1px solid var(--ink); border-radius: 999px; padding: 8px 18px; cursor: pointer; color: var(--ink); font-family: var(--display); font-weight: 700; }
+.pill:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+.pill-quiet { border-color: var(--hair); color: var(--muted); }
+.ocean-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 24px; }
+.ocean-controls label { justify-content: space-between; font-weight: 600; }
+.ocean-controls input[type="range"] { width: 140px; }
+.is-hidden { display: none; }
+.figure-canvas .browser { margin-top: 16px; }
 .controls input[type="checkbox"] { accent-color: var(--accent); width: 16px; height: 16px; }
 .stage-controls button {
   background: none; border: 1px solid var(--ink); border-radius: 999px; padding: 8px 18px;
@@ -214,9 +180,9 @@ button { font: inherit; }
 .stage-controls button.is-on, .stage-controls button:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
 
 /* Spread 04: browser plus phone strip */
-.spread-double .spread-text { grid-column: 1 / 5; }
-.spread-double .figure-browser { grid-column: 5 / 13; position: static; }
-.spread-double .figure-strip { grid-column: 5 / 13; position: static; }
+.spread-double .spread-text { grid-column: 1 / 6; grid-row: 2 / 4; }
+.spread-double #fig-flow { grid-column: 6 / 13; grid-row: 2; position: static; }
+.spread-double #fig-ocean { grid-column: 6 / 13; grid-row: 3; position: static; }
 .browser { border: 1px solid var(--ink); border-radius: 10px; overflow: hidden; background: #fff; }
 .browser-bar { display: flex; align-items: center; gap: 6px; padding: 10px 12px; border-bottom: 1px solid var(--ink); font-family: var(--display); font-size: 0.8rem; }
 .browser-bar span { width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--ink); }
@@ -272,12 +238,12 @@ button { font: inherit; }
   .masthead-line { display: none; }
   .masthead-nav { justify-content: flex-start; gap: 18px; }
   .cover { padding: 36px 0 56px; row-gap: 40px; }
-  .cover-text, .stack { grid-column: 1; }
-  .stack { height: 440px; }
-  .layer pre { font-size: 0.7rem; }
+  .cover-text { grid-column: 1; }
+  .recordings { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .ocean-controls { grid-template-columns: 1fr; }
   .spread { padding: 36px 0 56px; row-gap: 24px; }
   .spread-head, .spread-text, .spread-figure, .small-list,
-  .spread-double .spread-text, .spread-double .figure-browser, .spread-double .figure-strip,
+  .spread-double .spread-text, .spread-double #fig-flow, .spread-double #fig-ocean, .recordings, .hero-figure,
   .spread-how .spread-text, .figure-portrait, .colophon > div, .colophon-note { grid-column: 1; position: static; }
   .spread h2 { max-width: none; }
   .figure-phone { grid-template-columns: 1fr; }
